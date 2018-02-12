@@ -5,16 +5,16 @@
  * @param {!Object} res Cloud Function response context.
  */
 exports.process = (req, res) => {
-  // Example input: {"message": "Hello!"}
-  if (req.body.message === undefined) {
-    // This is an error case, as "message" is required.
-    
-    res.status(400).send('No message defined!');
-  } else {
+
     // Everything is okay.
-    const {sender, recipient, subject} = req.body;
-    
-    console.log(`Sender: ${sender}, subject: ${subject}`);
-    res.status(200).send('Success: ' + req.body.message);
+    const {sender, recipient, subject} = req.body;    
+    const debugLog = `Sender: ${sender}, subject: ${subject}`;
+    // Now process the files in the request:
+    // TODO : Process the incoming CSV only.
+
+
+    // If the processed file is GOOD bulk-insert the items into MongoDB
+    res.status(200).send(debugLog); 
+
   }
 };
