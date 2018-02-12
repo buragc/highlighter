@@ -10,9 +10,8 @@ exports.process = (req, res) => {
     const {sender, recipient, subject} = req.body;    
     const debugLog = `Sender: ${sender}, subject: ${subject}`;
     // Now process the files in the request:
-    // TODO : Process the incoming CSV only.
-
-
+    // todo : Process the incoming CSV only.
+    console.log(debugLog);
     // If the processed file is GOOD bulk-insert the items into MongoDB
     res.status(200).send(debugLog); 
 
