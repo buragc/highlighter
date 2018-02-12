@@ -12,9 +12,10 @@ const Busboy = require('busboy');
 exports.process = (req, res) => {
     if (req.method === 'POST') {
 	// Everything is okay.
-	const {sender, recipient, subject} = req.body;    
-	const debugLog = `Sender: ${sender}, subject: ${subject}`;
+	//const {sender, recipient, subject} = req.body;    
+	//const debugLog = `Sender: ${sender}, subject: ${subject}`;
 	// Now process the files in the request:
+        let debugLog = "";
         const busboy = new Busboy({ headers: req.headers });
         const uploads = { };
         const tmpdir  = os.tmpdir();
