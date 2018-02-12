@@ -14,6 +14,4 @@ exports.process = (req, res) => {
     console.log(debugLog);
     // If the processed file is GOOD bulk-insert the items into MongoDB
     res.status(200).send(debugLog); 
-
-  }
 };
