@@ -4,14 +4,54 @@
  * @param {!Object} req Cloud Function request context.
  * @param {!Object} res Cloud Function response context.
  */
-exports.process = (req, res) => {
+const path = require('path');
+const os   = require('os');
+const fs   = require('fs');
+const Busboy = require('busboy');
 
-    // Everything is okay.
-    const {sender, recipient, subject} = req.body;    
-    const debugLog = `Sender: ${sender}, subject: ${subject}`;
-    // Now process the files in the request:
-    // todo : Process the incoming CSV only.
-    console.log(debugLog);
-    // If the processed file is GOOD bulk-insert the items into MongoDB
-    res.status(200).send(debugLog); 
+exports.process = (req, res) => {
+    if (req.method === 'POST') {
+	// Everything is okay.
+	const {sender, recipient, subject} = req.body;    
+	const debugLog = `Sender: ${sender}, subject: ${subject}`;
+	// Now process the files in the request:
+        const busboy = new Busboy({ headers: req.headers });
+        const uploads = { };
+        const tmpdir  = os.tmpdir();
+        const payload = { };
+
+        busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
+            const filepath = path.join(tmpdir, filename);
+            uploads[fieldname] = filepath;
+            console.log(typeof file);
+            file.pipe(fs.createWriteStream(filepath));
+        });
+
+        busboy.on('field', (fieldname, val, valTruncated) => { 
+	    payload[fieldname] = val;
+	});
+         
+        busboy.on('finish', () => { 
+            for (const name in uploads) { 
+		const file = uploads[name];
+                fs.unlinkSync(file);
+		debugLog += `\n${name}\n`;
+            }
+            
+            debugLog += JSON.stringify(payload);
+	    // At this time we have the file, process the content...
+            res.status(200).send(debugLog);
+        });
+
+        busboy.end(req.rawBody);
+
+	// todo : Process the incoming CSV only.
+	// console.log(debugLog);
+	// If the processed file is GOOD bulk-insert the items into MongoDB
+        // res.status(200).send(debugLog); 
+    }
+    else {
+        res.status(500).send('Unsupported method');
+    }
 };
+
