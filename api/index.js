@@ -8,7 +8,6 @@ const path = require('path');
 const os   = require('os');
 const fs   = require('fs');
 const Busboy = require('busboy');
-const byline = require('byline');
 
 exports.process = (req, res) => {
     if (req.method === 'POST') {
@@ -38,14 +37,8 @@ exports.process = (req, res) => {
         busboy.on('finish', () => { 
             for (const name in uploads) { 
 		const file = uploads[name];
-		let stream = byline.createStream(fs.createReadStream(file, { encoding: 'utf8' }));		
-		stream.on('readable', function() { 
-		    var line;
-                    while (null !== (line = stream.read())) { 
-                        console.log(line);
- 			debugLog += `\n${line}`;
-                    }
-                });
+		let content = fs.readFileSync(file);
+		debugLog += `\n${content}\n`;
                 fs.unlinkSync(file);
 		debugLog += `\n${name}\n`;
             }
