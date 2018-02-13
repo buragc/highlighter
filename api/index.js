@@ -37,6 +37,7 @@ exports.process = (req, res) => {
         busboy.on('finish', () => { 
             for (const name in uploads) { 
 		const file = uploads[name];
+		console.log(file);
 		let content = fs.readFileSync(file);
 		debugLog += `\n${content}\n`;
                 fs.unlinkSync(file);
