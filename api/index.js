@@ -8,6 +8,7 @@ const path = require('path');
 const os   = require('os');
 const fs   = require('fs');
 const Busboy = require('busboy');
+const byline = require('byline');
 
 exports.process = (req, res) => {
     if (req.method === 'POST') {
@@ -22,10 +23,12 @@ exports.process = (req, res) => {
         const payload = { };
 
         busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
-            const filepath = path.join(tmpdir, filename);
-            uploads[fieldname] = filepath;
-            console.log(typeof file);
-            file.pipe(fs.createWriteStream(filepath));
+            if ( filename.includes("csv") ) {
+		    const filepath = path.join(tmpdir, filename);
+		    uploads[fieldname] = filepath;
+		    console.log(typeof file);
+		    file.pipe(fs.createWriteStream(filepath));
+            } 
         });
 
         busboy.on('field', (fieldname, val, valTruncated) => { 
@@ -35,6 +38,14 @@ exports.process = (req, res) => {
         busboy.on('finish', () => { 
             for (const name in uploads) { 
 		const file = uploads[name];
+		let stream = byline.createStream(fs.createReadStream(file, { encoding: 'utf8' }));		
+		stream.on('readable', function() { 
+		    var line;
+                    while (null !== (line = stream.read())) { 
+                        console.log(line);
+ 			debugLog += `\n${line}`;
+                    }
+                });
                 fs.unlinkSync(file);
 		debugLog += `\n${name}\n`;
             }
