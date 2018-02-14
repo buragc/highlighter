@@ -11,23 +11,17 @@ const Busboy = require('busboy');
 
 exports.process = (req, res) => {
     if (req.method === 'POST') {
-	// Everything is okay.
-	//const {sender, recipient, subject} = req.body;    
-	//const debugLog = `Sender: ${sender}, subject: ${subject}`;
-	// Now process the files in the request:
-        let debugLog = "";
         const busboy = new Busboy({ headers: req.headers });
-        const uploads = { };
         const tmpdir  = os.tmpdir();
-        const payload = { };
+        let debugLog = "";
+        let uploads = { };
+        let payload = { };
 
         busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
 	    console.log(`Processing file ${filename}`);
-            //if ( filename.includes("csv") ) {
-		    const filepath = path.join(tmpdir, filename);
-		    uploads[fieldname] = filepath;
-		    file.pipe(fs.createWriteStream(filepath));
-           // } 
+	    const filepath = path.join(tmpdir, filename);
+	    uploads[fieldname] = filepath;
+	    file.pipe(fs.createWriteStream(filepath));
         });
 
         busboy.on('field', (fieldname, val, valTruncated) => { 
@@ -39,14 +33,9 @@ exports.process = (req, res) => {
 		const file = uploads[name];
 		console.log(`Processing file ${name}`);		
                 fs.unlinkSync(file);
-		debugLog += `\n${name}\n`;
             }
-            
-            //debugLog += JSON.stringify(payload);
-	    console.log(debugLog);
-	    // At this time we have the file, process the content...
+	    console.log(`Done processing files`);
 	    res.end();
-            //res.status(200).send(debugLog);
         });
 
         busboy.end(req.rawBody);
