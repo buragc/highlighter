@@ -20,14 +20,10 @@ exports.process = (req, res) => {
 	let csvRows = [ ];
         busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
 	    if ( filename.indexOf('.csv') > 0) {
-	       console.log(`Processing file ${filename}`);
-               try {
-		       file.pipe(parse()).on('data', function (csvrow) { 
-			   csvRows.push(csvrow);
-		       }).on('end', function () { });
-               }
-	       catch (e) {
-		  console.log(`An error occurred ${e}`);
+		   console.log(`Processing file ${filename}`);
+		   file.on('data', function (data) {
+			console.log(`File data is ${data}`);
+		    }
                }
 	    }
 	    //const filepath = path.join(tmpdir, filename);
