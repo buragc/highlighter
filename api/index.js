@@ -23,11 +23,11 @@ exports.process = (req, res) => {
 
         busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
 	    console.log(`Processing file ${filename}`);
-            if ( filename.includes("csv") ) {
+            //if ( filename.includes("csv") ) {
 		    const filepath = path.join(tmpdir, filename);
 		    uploads[fieldname] = filepath;
 		    file.pipe(fs.createWriteStream(filepath));
-            } 
+           // } 
         });
 
         busboy.on('field', (fieldname, val, valTruncated) => { 
@@ -50,11 +50,6 @@ exports.process = (req, res) => {
         });
 
         busboy.end(req.rawBody);
-
-	// todo : Process the incoming CSV only.
-	// console.log(debugLog);
-	// If the processed file is GOOD bulk-insert the items into MongoDB
-        // res.status(200).send(debugLog); 
     }
     else {
         res.status(500).send('Unsupported method');
