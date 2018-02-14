@@ -25,7 +25,7 @@ exports.process = (req, res) => {
 			console.log(`File data is ${data}`);
 		    });
                }
-	    }
+	    
 	    //const filepath = path.join(tmpdir, filename);
 	    //uploads[fieldname] = filepath;
 	    //file.pipe(fs.createWriteStream(filepath));
