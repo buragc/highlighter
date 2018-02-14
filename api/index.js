@@ -26,7 +26,12 @@ exports.process = (req, res) => {
 			csvRows = data;
 		    });
 		   file.on('end', function ( ) { console.log(`Finished loading data`); } );
-               }
+             }
+             file.resume();
+        });
+
+	busboy.on('error', function(err) { 
+            console.log(err);
         });
 
         busboy.on('field', (fieldname, val, valTruncated) => { 
@@ -41,8 +46,8 @@ exports.process = (req, res) => {
 	    //res.status(200).send('DONE'); 
         });
 
-        busboy.end(req.rawBody);
-	req.pipe(busboy);
+        //busboy.end(req.rawBody);
+	return req.pipe(busboy);
     }
     else {
         res.status(500).send('Unsupported method');
