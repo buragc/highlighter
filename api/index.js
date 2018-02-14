@@ -19,11 +19,16 @@ exports.process = (req, res) => {
         let payload = { };
 	let csvRows = [ ];
         busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
-	    console.log(`Processing file ${filename}`);
 	    if ( filename.indexOf('.csv') > 0) {
-               file.pipe(parse()).on('data', function (csvrow) { 
-                   csvRows.push(csvrow);
-               });
+	       console.log(`Processing file ${filename}`);
+               try {
+		       file.pipe(parse()).on('data', function (csvrow) { 
+			   csvRows.push(csvrow);
+		       }).on('end', function () { });
+               }
+	       catch (e) {
+		  console.log(`An error occurred ${e}`);
+               }
 	    }
 	    //const filepath = path.join(tmpdir, filename);
 	    //uploads[fieldname] = filepath;
@@ -41,6 +46,7 @@ exports.process = (req, res) => {
 		console.log(`Processing file ${name}`);		
                 fs.unlinkSync(file);
             }*/
+	    console.log(`Running finish`);
             console.log(JSON.stringify(csvRows));
 	    console.log(`Done processing files`);
 	    res.end();
