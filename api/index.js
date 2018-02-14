@@ -23,7 +23,7 @@ exports.process = (req, res) => {
 		   console.log(`Processing file ${filename}`);
 		   file.on('data', function (data) {
 			console.log(`File data is ${data}`);
-		    }
+		    });
                }
 	    }
 	    //const filepath = path.join(tmpdir, filename);
