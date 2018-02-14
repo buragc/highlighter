@@ -25,6 +25,7 @@ exports.process = (req, res) => {
             if ( filename.includes("csv") ) {
 		    const filepath = path.join(tmpdir, filename);
 		    uploads[fieldname] = filepath;
+		    console.log(`Processing file ${filepath}`);
 		    console.log(typeof file);
 		    file.pipe(fs.createWriteStream(filepath));
             } 
@@ -38,9 +39,6 @@ exports.process = (req, res) => {
             for (const name in uploads) { 
 		const file = uploads[name];
 		console.log(`Processing file ${name}`);		
-		console.log(`Type of file is ${typeof file}`);
-		let content = fs.readFileSync(file);
-		debugLog += `\n${content}\n`;
                 fs.unlinkSync(file);
 		debugLog += `\n${name}\n`;
             }
