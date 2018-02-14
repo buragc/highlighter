@@ -37,7 +37,8 @@ exports.process = (req, res) => {
         busboy.on('finish', () => { 
             for (const name in uploads) { 
 		const file = uploads[name];
-		console.log(file);
+		console.log(`Processing file ${name}`);		
+		console.log(`Type of file is ${typeof file}`);
 		let content = fs.readFileSync(file);
 		debugLog += `\n${content}\n`;
                 fs.unlinkSync(file);
@@ -45,6 +46,7 @@ exports.process = (req, res) => {
             }
             
             debugLog += JSON.stringify(payload);
+	    console.log(debugLog);
 	    // At this time we have the file, process the content...
             res.status(200).send(debugLog);
         });
