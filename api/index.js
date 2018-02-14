@@ -24,6 +24,7 @@ exports.process = (req, res) => {
 		   file.on('data', function (data) {
 			console.log(`File data is ${data}`);
 		    });
+		   file.on('end', function ( ) { console.log(`Finished loading data`); } );
                }
 	    
 	    //const filepath = path.join(tmpdir, filename);
@@ -36,16 +37,10 @@ exports.process = (req, res) => {
 	});
          
         busboy.on('finish', () => { 
-            /*for (const name in uploads) { 
-		const file = uploads[name];
-		console.log(`File contents are ${file}`);
-		console.log(`Processing file ${name}`);		
-                fs.unlinkSync(file);
-            }*/
 	    console.log(`Running finish`);
-            console.log(JSON.stringify(csvRows));
+            //console.log(JSON.stringify(csvRows));
 	    console.log(`Done processing files`);
-	    res.end();
+	    res.status(200).send('DONE'); 
         });
 
         busboy.end(req.rawBody);
