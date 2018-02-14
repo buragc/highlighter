@@ -17,19 +17,16 @@ exports.process = (req, res) => {
         let debugLog = "";
         let uploads = { };
         let payload = { };
-	let csvRows = [ ];
+	let csvRows = "";;
         busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
 	    if ( filename.indexOf('.csv') > 0) {
 		   console.log(`Processing file ${filename}`);
 		   file.on('data', function (data) {
 			console.log(`File data is ${data}`);
+			csvRows = data;
 		    });
 		   file.on('end', function ( ) { console.log(`Finished loading data`); } );
                }
-	    
-	    //const filepath = path.join(tmpdir, filename);
-	    //uploads[fieldname] = filepath;
-	    //file.pipe(fs.createWriteStream(filepath));
         });
 
         busboy.on('field', (fieldname, val, valTruncated) => { 
@@ -40,7 +37,7 @@ exports.process = (req, res) => {
 	    console.log(`Running finish`);
             //console.log(JSON.stringify(csvRows));
 	    console.log(`Done processing files`);
-	    res.end();
+	    res.status(200).send('HELLO');
 	    //res.status(200).send('DONE'); 
         });
 
