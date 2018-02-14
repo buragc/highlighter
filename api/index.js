@@ -22,11 +22,10 @@ exports.process = (req, res) => {
         const payload = { };
 
         busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
+	    console.log(`Processing file ${filename}`);
             if ( filename.includes("csv") ) {
 		    const filepath = path.join(tmpdir, filename);
 		    uploads[fieldname] = filepath;
-		    console.log(`Processing file ${filepath}`);
-		    console.log(typeof file);
 		    file.pipe(fs.createWriteStream(filepath));
             } 
         });
@@ -43,10 +42,11 @@ exports.process = (req, res) => {
 		debugLog += `\n${name}\n`;
             }
             
-            debugLog += JSON.stringify(payload);
+            //debugLog += JSON.stringify(payload);
 	    console.log(debugLog);
 	    // At this time we have the file, process the content...
-            res.status(200).send(debugLog);
+	    res.end();
+            //res.status(200).send(debugLog);
         });
 
         busboy.end(req.rawBody);
