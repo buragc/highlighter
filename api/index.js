@@ -42,7 +42,7 @@ exports.process = (req, res) => {
 	    console.log(`Running finish`);
             //console.log(JSON.stringify(csvRows));
 	    console.log(`Done processing files`);
-	    res.status(200).send('HELLO');
+	    //res.status(200).send('HELLO');
 	    //res.status(200).send('DONE'); 
         });
 
