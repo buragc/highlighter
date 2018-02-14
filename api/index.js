@@ -43,7 +43,7 @@ exports.process = (req, res) => {
             //console.log(JSON.stringify(csvRows));
 	    console.log(`Done processing files`);
 	    //res.status(200).send('HELLO');
-	    //res.status(200).send('DONE'); 
+	    res.status(200).send('DONE'); 
         });
 
         //busboy.end(req.rawBody);
