@@ -23,8 +23,8 @@ exports.process = (req, res) => {
 	    if ( filename.indexOf('.csv') > 0) {
                file.pipe(parse()).on('data', function (csvrow) { 
                    csvRows.push(csvrow);
-               }
-	    });
+               });
+	    }
 	    //const filepath = path.join(tmpdir, filename);
 	    //uploads[fieldname] = filepath;
 	    //file.pipe(fs.createWriteStream(filepath));
