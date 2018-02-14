@@ -8,6 +8,7 @@ const path = require('path');
 const os   = require('os');
 const fs   = require('fs');
 const Busboy = require('busboy');
+const parse  = require('csv-parse');
 
 exports.process = (req, res) => {
     if (req.method === 'POST') {
@@ -16,12 +17,17 @@ exports.process = (req, res) => {
         let debugLog = "";
         let uploads = { };
         let payload = { };
-
+	let csvRows = [ ];
         busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
 	    console.log(`Processing file ${filename}`);
-	    const filepath = path.join(tmpdir, filename);
-	    uploads[fieldname] = filepath;
-	    file.pipe(fs.createWriteStream(filepath));
+	    if ( filename.indexOf('.csv') > 0) {
+               file.pipe(parse()).on('data', function (csvrow) { 
+                   csvRows.push(csvrow);
+               }
+	    });
+	    //const filepath = path.join(tmpdir, filename);
+	    //uploads[fieldname] = filepath;
+	    //file.pipe(fs.createWriteStream(filepath));
         });
 
         busboy.on('field', (fieldname, val, valTruncated) => { 
@@ -29,11 +35,13 @@ exports.process = (req, res) => {
 	});
          
         busboy.on('finish', () => { 
-            for (const name in uploads) { 
+            /*for (const name in uploads) { 
 		const file = uploads[name];
+		console.log(`File contents are ${file}`);
 		console.log(`Processing file ${name}`);		
                 fs.unlinkSync(file);
-            }
+            }*/
+            console.log(JSON.stringify(csvRows));
 	    console.log(`Done processing files`);
 	    res.end();
         });
