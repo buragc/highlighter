@@ -44,6 +44,7 @@ exports.process = (req, res) => {
         });
 
         busboy.end(req.rawBody);
+	req.pipe(busboy);
     }
     else {
         res.status(500).send('Unsupported method');
