@@ -8,11 +8,11 @@ const path = require('path');
 const os   = require('os');
 const fs   = require('fs');
 const Busboy = require('busboy');
-const parse  = require('csv-parse');
-const CSV    = require('csv-string');
+const parser = csv();
 
 exports.process = (req, res) => {
     if (req.method === 'POST') {
+        let rows = [ ];
         const busboy = new Busboy({ headers: req.headers });
         // This object will accumulate all the tploaded files, keyed by their name.
         const uploads = {}
@@ -27,15 +27,24 @@ exports.process = (req, res) => {
 		    uploads[fieldname] = filepath;
 
 		    file.on('data', function(data) { 
+                        parser.write(data);
 			dataChunks.push(data);
 		     });
 
-		    file.on('end', function( ) { 
+		    file.on('end', function( ) {
+                         parser.end(); 
 			 //console.log(dataChunks.join());
 		    });
 
 		    let writer = fs.createWriteStream(filepath);
 		    file.pipe(writer);
+
+                    parser.on("readable", function ( ) { 
+                        var d;
+                        while (( d = parser.read()) !== null) { 
+                            rows.push(d);
+                        }
+                    });
 
 	    } else {
 	    	file.resume( );
@@ -50,11 +59,10 @@ exports.process = (req, res) => {
             }
             const csvData = dataChunks.join();
 	    console.log(csvData);
-	    const rows = CSV.parse(csvData);
 	    for (const row in rows) {
 		console.log(row);
 	    }
-            res.end();
+            //res.end();
         });
 
         // The raw bytes of the upload will be in req.rawBody. Send it to
