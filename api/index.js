@@ -23,7 +23,12 @@ exports.process = (req, res) => {
             // only be used for files small enough to fit in memory.
             const filepath = path.join(tmpdir, filename)
             uploads[fieldname] = filepath;
-            file.pipe(fs.createWriteStream(filepath));
+            let writer = fs.createWriteStream(filepath);
+            file.pipe(writer);
+	    writer.on('close', function() { 
+	        const c = fs.readFileSync(file).toString();
+		console.log(c);    
+	    });
         });
 
         // This callback will be invoked after all uploaded files are saved.
@@ -34,7 +39,7 @@ exports.process = (req, res) => {
             for (const name in uploads) {
                 const file = uploads[name];
 		console.log(`Filename is ${file}`);
-		const lines = fs.readFileSync(file, "utf8");
+		const lines = fs.readFileSync(file, 'utf8');
                 console.log(lines);
 		fs.unlinkSync(file);
             }
