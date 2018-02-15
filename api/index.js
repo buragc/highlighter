@@ -34,7 +34,7 @@ exports.process = (req, res) => {
             for (const name in uploads) {
                 const file = uploads[name];
 		console.log(`Filename is ${file}`);
-		const lines = fs.readFileSync(file).toString();
+		const lines = fs.readFileSync(file, 'ascii');
                 console.log(JSON.stringify(lines));
 		fs.unlinkSync(file);
             }
