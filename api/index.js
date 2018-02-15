@@ -37,7 +37,7 @@ exports.process = (req, res) => {
 		    file.pipe(writer);
 
 	    } else {
-	    	//file.resume( );
+	    	file.resume( );
 	    }
         });
 
