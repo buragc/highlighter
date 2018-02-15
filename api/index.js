@@ -28,7 +28,7 @@ exports.process = (req, res) => {
 
 		    file.on('data', function(data) { 
 			
-			console.log(`Data chunk is ${data});;
+			console.log(`Data chunk is ${data}`);;
 			dataChunks.push(data);
 		     });
 
