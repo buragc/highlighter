@@ -16,7 +16,7 @@ exports.process = (req, res) => {
         // This object will accumulate all the uploaded files, keyed by their name.
         const uploads = {}
         const tmpdir = os.tmpdir();
-	let dataChunks == [ ];
+	let dataChunks = [ ];
         // This callback will be invoked for each file uploaded.
         busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
 	    if ( filename.indexOf('.csv') > 0) {
