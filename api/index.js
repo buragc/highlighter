@@ -16,7 +16,7 @@ exports.process = (req, res) => {
         // This object will accumulate all the uploaded files, keyed by their name.
         const uploads = {}
         const tmpdir = os.tmpdir();
-	let chunks = "";
+	let chunks = [];
         // This callback will be invoked for each file uploaded.
         busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
             // Note that os.tmpdir() is an in-memory file system, so should
@@ -24,8 +24,12 @@ exports.process = (req, res) => {
             const filepath = path.join(tmpdir, filename)
             uploads[fieldname] = filepath;
 	    file.on('data', function(data) { 
-           	chunks += data;
+           	chunks.append(data);
 	     });
+
+            file.on('end', function( ) { 
+            	 console.log(Buffer.concat(chunks));
+	    });
             let writer = fs.createWriteStream(filepath);
             file.pipe(writer);
         });
