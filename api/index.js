@@ -26,6 +26,7 @@ exports.process = (req, res) => {
 		    uploads[fieldname] = filepath;
 
 		    file.on('data', function(data) { 
+			console.log(data);
 			dataChunks.push(data);
 		     });
 
