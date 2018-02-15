@@ -13,44 +13,38 @@ const parse  = require('csv-parse');
 exports.process = (req, res) => {
     if (req.method === 'POST') {
         const busboy = new Busboy({ headers: req.headers });
-        const tmpdir  = os.tmpdir();
-        let debugLog = "";
-        let uploads = { };
-        let payload = { };
-	let csvRows = "";;
+        // This object will accumulate all the uploaded files, keyed by their name.
+        const uploads = {}
+        const tmpdir = os.tmpdir();
+
+        // This callback will be invoked for each file uploaded.
         busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
-	    if ( filename.indexOf('.csv') > 0) {
-		   console.log(`Processing file ${filename}`);
-		   file.on('data', function (data) {
-			console.log(`File data is ${data}`);
-			csvRows = data;
-		    });
-		   file.on('end', function ( ) { console.log(`Finished loading data`); } );
-             }
-             file.resume();
+            // Note that os.tmpdir() is an in-memory file system, so should
+            // only be used for files small enough to fit in memory.
+            const filepath = path.join(tmpdir, filename)
+            uploads[fieldname] = filepath;
+            file.pipe(fs.createWriteStream(filepath));
         });
 
-	busboy.on('error', function(err) { 
-            console.log(err);
+        // This callback will be invoked after all uploaded files are saved.
+        busboy.on('finish', () => {
+
+            // *** Process uploaded files here ***
+
+            for (const name in uploads) {
+                const file = uploads[name];
+                fs.unlinkSync(file);
+            }
+            res.end();
         });
 
-        busboy.on('field', (fieldname, val, valTruncated) => { 
-	    payload[fieldname] = val;
-	});
-         
-        busboy.on('finish', () => { 
-	    console.log(`Running finish`);
-            //console.log(JSON.stringify(csvRows));
-	    console.log(`Done processing files`);
-	    //res.status(200).send('HELLO');
-	    res.status(200).send('DONE'); 
-        });
-
-        //busboy.end(req.rawBody);
-	return req.pipe(busboy);
+        // The raw bytes of the upload will be in req.rawBody. Send it to
+        // busboy, and get a callback when it's finished.
+        busboy.end(req.rawBody);
+    } else {
+        // Client error - only support POST.
+        res.status(405).end();
     }
-    else {
-        res.status(500).send('Unsupported method');
-    }
+
 };
 
