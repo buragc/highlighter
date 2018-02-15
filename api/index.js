@@ -27,15 +27,15 @@ exports.process = (req, res) => {
 		    uploads[fieldname] = filepath;
 
 		    file.on('data', function(data) { 
-			console.log("chunky");
-			console.log(data);
+			
+			console.log(`Data chunk is ${data});;
 			dataChunks.push(data);
 		     });
 
 		    file.on('end', function( ) {
-			console.log(Buffer.concat(dataChunks));
+			//console.log(Buffer.concat(dataChunks));
 			allData = Buffer.concat(dataChunks).toString();
-			console.log(allData);	 
+			console.log(`All data is ${allData}`);	 
 		    });
 
 		    let writer = fs.createWriteStream(filepath);
@@ -54,8 +54,8 @@ exports.process = (req, res) => {
 		fs.unlinkSync(file);
             }
             
-	    console.log(allData);
-	    const csvRows = allData.split('\r\n');
+	    //console.log(allData);
+	    const csvRows = allData.split('\n');
             //console.log(JSON.stringify(csvData.split('\r\n')));
             for (const row in csvRows) {
                 console.log(JSON.stringify(row));
