@@ -23,6 +23,7 @@ exports.process = (req, res) => {
             // only be used for files small enough to fit in memory.
             const filepath = path.join(tmpdir, filename)
             uploads[fieldname] = filepath;
+	    console.log(file.toString());
             let writer = fs.createWriteStream(filepath);
             file.pipe(writer);
 	    writer.on('finish', function() { 
