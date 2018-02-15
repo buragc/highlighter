@@ -30,7 +30,7 @@ exports.process = (req, res) => {
 		     });
 
 		    file.on('end', function( ) { 
-			 console.log(dataChunks.join());
+			 //console.log(dataChunks.join());
 		    });
 
 		    let writer = fs.createWriteStream(filepath);
@@ -47,7 +47,12 @@ exports.process = (req, res) => {
                 const file = uploads[name];
 		fs.unlinkSync(file);
             }
-            console.log(dataChunks.join());
+            const csvData = dataChunks.join();
+	    console.log(csvData);
+	    const csvRows = csvData.split('\n\r');
+            for (const row in csvRows) {
+		console.log(row);
+	    }
             res.end();
         });
 
