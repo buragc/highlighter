@@ -3,6 +3,6 @@
   "version": "0.0.1",
   "dependencies": {
     "busboy": "^0.2.14",
-    "fast-csv": "^2.4.1"
+    "csv-parse": "^2.0.3"
   }
 }
