@@ -23,24 +23,18 @@ exports.process = (req, res) => {
             // only be used for files small enough to fit in memory.
             const filepath = path.join(tmpdir, filename)
             uploads[fieldname] = filepath;
-	    console.log(file.toString());
             let writer = fs.createWriteStream(filepath);
             file.pipe(writer);
-	    writer.on('finish', function() { 
-	        const c = fs.readFileSync(file).toString();
-		console.log(c);    
-	    });
         });
 
         // This callback will be invoked after all uploaded files are saved.
         busboy.on('finish', () => {
 
             // *** Process uploaded files here ***
-
             for (const name in uploads) {
                 const file = uploads[name];
 		console.log(`Filename is ${file}`);
-		const lines = fs.readFileSync(file, 'utf8');
+		const lines = fs.readFileSync(file).toString();
                 console.log(lines);
 		fs.unlinkSync(file);
             }
