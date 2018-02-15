@@ -34,7 +34,7 @@ exports.process = (req, res) => {
             for (const name in uploads) {
                 const file = uploads[name];
 		console.log(`Filename is ${file}`);
-		const lines = fs.readFileSync(file).toString().split('\r');
+		const lines = fs.readFileSync(file).toString();
                 console.log(lines);
 		fs.unlinkSync(file);
             }
