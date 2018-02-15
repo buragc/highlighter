@@ -16,13 +16,16 @@ exports.process = (req, res) => {
         // This object will accumulate all the uploaded files, keyed by their name.
         const uploads = {}
         const tmpdir = os.tmpdir();
-
+	let chunks = "";
         // This callback will be invoked for each file uploaded.
         busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
             // Note that os.tmpdir() is an in-memory file system, so should
             // only be used for files small enough to fit in memory.
             const filepath = path.join(tmpdir, filename)
             uploads[fieldname] = filepath;
+	    file.on('data', function(data) { 
+           	chunks += data;
+	     });
             let writer = fs.createWriteStream(filepath);
             file.pipe(writer);
         });
@@ -35,7 +38,7 @@ exports.process = (req, res) => {
                 const file = uploads[name];
 		console.log(`Filename is ${file}`);
 		const lines = fs.readFileSync(file, 'ascii');
-                console.log(JSON.stringify(lines));
+                console.log(chunks);
 		fs.unlinkSync(file);
             }
             res.end();
