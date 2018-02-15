@@ -50,7 +50,7 @@ exports.process = (req, res) => {
             const csvData = dataChunks.join();
 	    console.log(csvData);
 	    const csvRows = csvData.split('\n');
-            console.log(JSON.stringify(csvData.split('\r\n'));
+            console.log(JSON.stringify(csvData.split('\r\n')));
             for (const row in csvRows) {
                 console.log(JSON.stringify(row));
 		console.log(row);
