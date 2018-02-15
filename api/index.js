@@ -30,7 +30,9 @@ exports.process = (req, res) => {
 		     });
 
 		    file.on('end', function( ) {
-			allData = Buffer.concat(dataChunks).toString();	 
+			console.log(Buffer.concat(dataChunks));
+			allData = Buffer.concat(dataChunks).toString();
+			console.log(allData);	 
 		    });
 
 		    let writer = fs.createWriteStream(filepath);
