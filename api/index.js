@@ -9,11 +9,12 @@ const os   = require('os');
 const fs   = require('fs');
 const Busboy = require('busboy');
 const parse  = require('csv-parse');
+const CSV    = require('csv-string');
 
 exports.process = (req, res) => {
     if (req.method === 'POST') {
         const busboy = new Busboy({ headers: req.headers });
-        // This object will accumulate all the uploaded files, keyed by their name.
+        // This object will accumulate all the tploaded files, keyed by their name.
         const uploads = {}
         const tmpdir = os.tmpdir();
 	let dataChunks = [ ];
@@ -49,8 +50,8 @@ exports.process = (req, res) => {
             }
             const csvData = dataChunks.join();
 	    console.log(csvData);
-	    const csvRows = csvData.split('\n\r');
-            for (const row in csvRows) {
+	    const rows = CSV.parse(csvData);
+	    for (const row in rows) {
 		console.log(row);
 	    }
             res.end();
