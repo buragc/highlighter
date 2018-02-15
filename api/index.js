@@ -8,7 +8,7 @@ const path = require('path');
 const os   = require('os');
 const fs   = require('fs');
 const Busboy = require('busboy');
-const parser = csv();
+const parser = require('fast-csv');
 
 exports.process = (req, res) => {
     if (req.method === 'POST') {
