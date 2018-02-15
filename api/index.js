@@ -19,19 +19,23 @@ exports.process = (req, res) => {
 	let chunks = [];
         // This callback will be invoked for each file uploaded.
         busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
-            // Note that os.tmpdir() is an in-memory file system, so should
-            // only be used for files small enough to fit in memory.
-            const filepath = path.join(tmpdir, filename)
-            uploads[fieldname] = filepath;
-	    file.on('data', function(data) { 
-           	chunks.append(data);
-	     });
+	    if ( filename.indexOf('.csv') > 0) {
+		    // Note that os.tmpdir() is an in-memory file system, so should
+		    // only be used for files small enough to fit in memory.
+		    const filepath = path.join(tmpdir, filename);
+		    uploads[fieldname] = filepath;
+		    file.on('data', function(data) { 
+			chunks.append(data);
+		     });
 
-            file.on('end', function( ) { 
-            	 console.log(Buffer.concat(chunks));
-	    });
-            let writer = fs.createWriteStream(filepath);
-            file.pipe(writer);
+		    file.on('end', function( ) { 
+			 console.log(Buffer.concat(chunks));
+		    });
+		    let writer = fs.createWriteStream(filepath);
+		    file.pipe(writer);
+	    } else {
+		file.resume( );
+	    }
         });
 
         // This callback will be invoked after all uploaded files are saved.
