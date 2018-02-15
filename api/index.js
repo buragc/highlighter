@@ -20,12 +20,14 @@ exports.process = (req, res) => {
         // This callback will be invoked for each file uploaded.
         busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
 	    if ( filename.indexOf('.csv') > 0) {
+		    console.log("Got a CSV!");
 		    // Note that os.tmpdir() is an in-memory file system, so should
 		    // only be used for files small enough to fit in memory.
 		    const filepath = path.join(tmpdir, filename);
 		    uploads[fieldname] = filepath;
 
 		    file.on('data', function(data) { 
+			console.log("chunky");
 			console.log(data);
 			dataChunks.push(data);
 		     });
