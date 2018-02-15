@@ -16,6 +16,7 @@ exports.process = (req, res) => {
         const uploads = {}
         const tmpdir = os.tmpdir();
 	let dataChunks = [ ];
+	let allData;
         // This callback will be invoked for each file uploaded.
         busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
 	    if ( filename.indexOf('.csv') > 0) {
@@ -29,7 +30,7 @@ exports.process = (req, res) => {
 		     });
 
 		    file.on('end', function( ) {
-			 //console.log(dataChunks.join());
+			allData = Buffer.concat(dataChunks).toString();	 
 		    });
 
 		    let writer = fs.createWriteStream(filepath);
@@ -47,9 +48,9 @@ exports.process = (req, res) => {
                 const file = uploads[name];
 		fs.unlinkSync(file);
             }
-            const csvData = dataChunks.join();
-	    console.log(csvData);
-	    const csvRows = csvData.split('\r\n');
+            
+	    console.log(allData);
+	    const csvRows = allData.split('\r\n');
             //console.log(JSON.stringify(csvData.split('\r\n')));
             for (const row in csvRows) {
                 console.log(JSON.stringify(row));
