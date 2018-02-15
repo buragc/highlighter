@@ -10,13 +10,13 @@ const fs   = require('fs');
 const Busboy = require('busboy');
 
 exports.process = (req, res) => {
+    let allData = "";
     if (req.method === 'POST') {
         const busboy = new Busboy({ headers: req.headers });
         // This object will accumulate all the uploaded files, keyed by their name.
         const uploads = {}
         const tmpdir = os.tmpdir();
 	let dataChunks = [ ];
-	let allData;
         // This callback will be invoked for each file uploaded.
         busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
 	    if ( filename.indexOf('.csv') > 0) {
