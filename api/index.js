@@ -25,7 +25,7 @@ exports.process = (req, res) => {
             uploads[fieldname] = filepath;
             let writer = fs.createWriteStream(filepath);
             file.pipe(writer);
-	    writer.on('close', function() { 
+	    writer.on('finish', function() { 
 	        const c = fs.readFileSync(file).toString();
 		console.log(c);    
 	    });
